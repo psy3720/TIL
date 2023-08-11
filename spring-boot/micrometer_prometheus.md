@@ -101,8 +101,7 @@ application.yml
 
 
 전체 프로세스
-
-(이미지 추가)
+![micrometer_prometheus_grafana_architecture.png](../static/image/spring-boot/micrometer_prometheus_grafana_architecture.png)
 
 1. 스프링부트 액츄에이터와 마이크로미터를 사용하여 수 많은 메트릭을 자동으로 생성한다.
 - 마이크로미터 프로메테우스 구현체는 프로메테우스가 읽을 수 있는 포멧으로 메트릭을 생성한다.
@@ -123,7 +122,7 @@ application.yml
 ```
 3. 접속하여 확인 (http://localhost:9090)
 
-(이미지)
+![prometheus_run.png](../static/image/spring-boot/prometheus_run.png)
 
 ---
 
@@ -214,7 +213,10 @@ scrape_configs 하위에 옵션을 추가해준다.
 > HTTP 요청 메트릭을 그래프로 표현할때, 카운터는 계속 누적해서 증가하는 값이다. 계속 증가하는 그래프만 보게되는데 이렇게 증가만 하는 그래프는 특정 시간에 얼마나 고객의 요청이 들어왔는지 한눈에 확인하기 매우 어렵다. 이런 문제를 해결하기 위해 increase(), rate() 같은 함수를 지원한다.
 
 #### 이미지 비교
-(이미지1) (이미지2)
+함수 사용 전(증가하는 그래프)
+![request_increasing_graph.png](../static/image/spring-boot/request_increasing_graph.png) 
+함수 사용 
+![request_incresing_function_graph.png](../static/image/spring-boot/request_incresing_function_graph.png)
 
 - increase()
 : increase() 함수를 사용하면 지정한 시간 단위별로 증가를 확인할 수 있다. 마지막에 [시간]을 사용해서 범위 벡터를 선택해야 한다.  
