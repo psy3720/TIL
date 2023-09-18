@@ -22,7 +22,7 @@
 
 ---
 #### 그라파나 연동
-![grafana_start.png](../static/image/spring-boot/grafana/grafana_start.png)
+![grafana_start.png](../../static/image/spring-boot/grafana/grafana_start.png)
 - 왼쪽 하단의 설정(Configuration) 버튼에서 Data sources 선택
 - Add data source 선택
 - Prometheus 선택
@@ -51,7 +51,7 @@ URL: http://localhost:9090(프로메테우스 url)
 #### 대시보드에 패널만들기
 대시보드=틀, 패널=컴포넌트  
 
-![grafana_start_panel.png](../static/image/spring-boot/grafana/grafana_start_panel.png)
+![grafana_start_panel.png](../../static/image/spring-boot/grafana/grafana_start_panel.png)
 1. 오른쪽 상단의 Add panel 버튼(차트 모양)선택
 2. Add a new panel 메뉴 선택
 3. 패널의 정보를 입력할 수 있는 화면 나타남
@@ -94,7 +94,7 @@ Options -> Legend 선택 후 Custom -> 변경할 텍스트 입력
 
 #### 대시보드 불러오기
 
-![grafana_load_share.png](../static/image/spring-boot/grafana/grafana_load_share.png)
+![grafana_load_share.png](../../static/image/spring-boot/grafana/grafana_load_share.png)
 1. 그라파나 접속 후 왼쪽 Dashboards 메뉴 선택
 2. New 버튼 선택 -> Import 선택
 3. 불러올 대시보드 숫자(11378)를 입력하고 Load 버튼 선택
