@@ -117,3 +117,53 @@ insert-message-queue으로 브랜치를 만든 후 변경된 내용을 pull requ
 
 *cache-first-page 생략  
 (https://github.com/psy3720/io-bound-application/commit/33fe797502b917878e48131cbffde00eacdaedd5)
+
+---
+
+#### 스트레스 테스트 - 글 작성 요청은 실패하지 않을까?
+RabbitMQ로 글쓰기 기능을 개선했으나 요청이 모두 성공하지 않는다.
+
+실습에서 만든 인스턴스는 다음과 같이 위치한다.
+각각의 인스턴스간에 ping을 날려서 확인해보면 한국-> 대만(60~70ms), 한국->일본(30~40ms)정도 지연시간이 걸린다.
+
+같은 리전에 있는 인스턴스끼리는 1ms 정도밖에 걸리지 않는다.
+
+Nginx 인스턴스를 서울에 새로 만들고, Nginx 인스턴스에 RabbitMQ도 같이 올린다.
+그러면 모든 인스턴스가 서울 리젼에 있어 인스턴스끼리 Latency가 매우 낮아진다.
+
+이렇게 인스턴스를 위치시키면 요청 한건을 처리하는데 드는 시간이 줄어든다.
+
+(실무에서는 같은 인스턴스에 두 개 이상의 컨테이너를 띄우는게 좋지 않다. 테스트 환경이라면 괜찮으나, 운영환경이라면 한쪽 장애가 다른쪽에 영향을 미칠수 있다.)
+
+```
+# 3번인스턴스를 제거한다.
+> sudo vi /etc/nginx/nginx.conf
+
+# nginx 실행
+> sudo systemctl start nginx
+
+# docker 설치 및 실행
+> sudo yum install -y docker
+> sudo systemctl start docker
+
+# 권한 변경
+> sudo chmod 666 /var/run/docker.sock
+```
+
+새로 변경된 rabbitmq host ip를 수정한다.(feat: rabbitmq host 변경)
+스트레스 테스트 진행
+
+### nofile errors 해결
+```
+# nginx pid 확인
+> ps aux | grep nginx
+
+# nofile limit 확인 및 변경
+> sudo prlimit --nofile --output RESOURCE,SOFT,HARD --pid {PID}
+> sudo cat /proc/sys/fs/file-max
+> sudo prlimit --nofile=100000 --pid={PID}
+```
+
+스트레스 테스트를 하면서 Latency를 줄이고, Error 로그를 확인하여 서버 설정을 변경하여 해결하였다.
+
+---
