@@ -3,7 +3,55 @@
 이 내용은 김영한님의 "실전! 스프링 데이터 JPA" 강의를 보고 정리하였습니다.
 
 ---
+#### Spring data JPA
+> Spring Data JPA는 Spring Framework와 Java Persistence API(JPA)를 효과적으로 결합하여 데이터베이스 엑세스를 단순화하고 개발 생산성을 향상시키는 도구 및 라이브러리이다.
+Spring Data JPA를 사용하면 데이터베이스와 상호 작용하는 데 필요한 많은 코드를 줄일 수 있다.
+- spring data jpa를 사용하면 반복적인 crud를 작성하지 않아도 된다.
+- spring data jpa는 jpa를 편리하게 사용할 수 있도록 도와준다.
 
+---
+
+### 프로젝트 환경설정
+- spring web
+- h2 database
+- spring data jpa
+- lombok
+
+---
+
+@PersistenceContext
+*이 어노테이션을 사용하면 JPA에서 사용하는 영속성 컨텍스트를 필드 주입을 통해 받을 수 있다.
+
+[참고]
+- 테스트 코드 작성시 setter보다는 생성자로 값을 세팅하는 것이 좋다.
+- @Entity 어노테이션 사용시 빈 생성자가 구현되어있어야 한다.(접근제어자는 protected까지 가능, 내부적으로 프록시 등 사용하기 때문에 접근제어자를 private로 만들면 안된다.)
+- JPA에서는 모든 동작이 Transaction내에서 수행되어야 한다.
+- @Transactional 클래스 레벨에 어노테이션을 적용하면 클래스 하위 메서드에 전부 적용된다.
+- 테스트에서 @Transactional을 사용하는 경우 테스트가 끝나면 rollback, 영속성 컨텍스트는 flush 작업을 수행한다.
+- 만약 @Rollback(false)시 롤백하지 않는다.(롤백 하지 않기 때문에 테스트 데이터가 남는다.)
+- JPA는 같은 트랜잭션내에서는 인스턴스의 동일성 보장한다.
+
+---
+
+Spring data jpa 사용시 구현하면 된다. JpaRepository<T, ID>
+find 메서드를 사용하여 인스턴스를 가져올 때, Optional로 반환되며 바로 get메서드로 가져오는 것보다는 orElse등으로 없을 경우 처리를 권장한다.
+
+- p6spy 사용
+  쿼리파라미터 조회를 위해 외부 라이브러리인 p6spy 사용한다.
+  실무에서 사용하는 경우에는 성능테스트 후 사용하는 것을 권장.
+
+---
+
+예제 도메인 모델
+- 멤버와 팀의 관계는 N:1이다. (Member(N):Team(1))
+- 외래키는 보통 다대일인 경우 N인 엔티티에 둔다.
+- MappedBy는 외래키가 없는쪽에 건다.
+- ToString 메소드를 찍을때 연관관계 필드는 가급적 지양(무한루프돌수 있음.)
+- flush를 호출하여 영속성 컨텍스트의 내용을 반영(insert 퀴리 실행)
+- clear를 통해 초기화(영속성 컨테스트에 캐시에 저장된 값을 날린다.)
+- fetch를 LAZY 지연로딩으로 세팅해야 함.(defult는 EAGER이다.)
+
+--- 
 #### 순수 JPA 기반 리포지토리 만들기
 
 - 순수 jpa 기반으로 코드를 작성한 후 spring data jpa를 사용하면 어떤 장점이 있는지 확인하는 방식으로 실습 진행
